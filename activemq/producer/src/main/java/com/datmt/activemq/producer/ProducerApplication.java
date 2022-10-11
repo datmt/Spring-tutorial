@@ -8,10 +8,7 @@ import org.springframework.jms.core.JmsTemplate;
 public class ProducerApplication {
 
     public static void main(String[] args) {
-        var context = SpringApplication.run(ProducerApplication.class, args);
-        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-
-        jmsTemplate.convertAndSend("test_queue", "Some message");
+        SpringApplication.run(ProducerApplication.class, args);
     }
 
 }
