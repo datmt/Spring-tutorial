@@ -3,9 +3,13 @@ package com.datmt.activemq.producer;
 import com.datmt.activemq.data.Letter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import java.util.UUID;
 
 @RestController
@@ -28,4 +32,5 @@ public class MessageController {
         template.convertAndSend("test_letter", letter);
         return "Letter sent!";
     }
+
 }
