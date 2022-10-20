@@ -9,8 +9,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,6 +32,7 @@ public class TransactionManagementWithJDBC {
         connection.createStatement().executeUpdate("UPDATE bank_user set balance = 1000");
         connection.close();
     }
+
 
     @Test
     void test_query_existing_initial_data() throws SQLException {
@@ -130,5 +132,29 @@ public class TransactionManagementWithJDBC {
         }
     }
 
+
+
+
+    @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void test_transfer_money_with_transactional_annotation() {
+
+        try {
+            var jdbcTemplate = new JdbcTemplate(datasource);
+            //withdraw credits from Alice's account
+            jdbcTemplate.update("UPDATE bank_user SET balance = 900 WHERE name = 'Alice'");
+            //Simulate an exception
+            if (true) {
+                throw new RuntimeException("Opps! System crashes...");
+            }
+            jdbcTemplate.update("UPDATE bank_user SET balance = 1100 WHERE name = 'Bob'");
+
+        } catch (RuntimeException e) {
+            //
+        }
+
+        validateAliceAndBobAmount(1000L, 1000L);
+
+    }
 
 }
