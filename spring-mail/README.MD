@@ -1,3 +1,3 @@
 ## Send email using Spring & MailHog
 
-Full tutorial is available at https://datmt.com/spring-tutorial/send-email-using-spring-mailhog/
+Full tutorial is available at https://datmt.com/backend/java/spring/test-email-sending-with-mailhog-in-spring/ 
