@@ -24,9 +24,7 @@ public class CommandlineRunnerApplication {
     }
 
     @Bean
-    CommandLineRunner runner2() {
-        return args -> {
-            logger.info("Hello, world! From commandline runner ALSO as a bean");
-        };
+    CommandLineRunner runner2(DummyService dummyService) {
+        return args -> dummyService.doSomething();
     }
 }
