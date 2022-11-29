@@ -3,9 +3,11 @@ package com.datmt.commandlinerunner.runners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(2)
 public class CreateDatabaseConnection implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(CreateDatabaseConnection.class);
