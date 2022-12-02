@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <Elasticsearch name="Elasticsearch">
+            <IndexName indexName="spring-app-index" />
+            <JacksonJsonLayout />
+            <AsyncBatchDelivery>
+                <IndexTemplate name="spring-app-index" path="classpath:indexTemplate.json" />
+                <JestHttp serverUris="http://localhost:9200" />
+            </AsyncBatchDelivery>
+        </Elasticsearch>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Elasticsearch"/>
+        </Root>
+    </Loggers>
+</Configuration>
