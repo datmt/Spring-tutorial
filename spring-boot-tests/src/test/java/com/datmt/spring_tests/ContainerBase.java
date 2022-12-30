@@ -3,6 +3,7 @@ package com.datmt.spring_tests;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -11,6 +12,7 @@ public class ContainerBase {
 
     @Container
     public static GenericContainer mongoDBContainer = new GenericContainer("mongo:5.0")
+            .waitingFor(Wait.forLogMessage(".*Waiting for connections.*\\n", 1))
             .withExposedPorts(27017)
             .withEnv("MONGO_INITDB_ROOT_USERNAME", "datmt_root")
             .withEnv("MONGO_INITDB_ROOT_PASSWORD", "datmt_root");
