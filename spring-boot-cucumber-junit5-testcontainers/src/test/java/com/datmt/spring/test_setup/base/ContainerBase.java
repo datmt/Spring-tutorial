@@ -4,27 +4,22 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.lifecycle.Startables;
 
-@Testcontainers
 public abstract class ContainerBase {
 
     public static final PostgreSQLContainer DB_CONTAINER;
 
     static  {
         DB_CONTAINER = new PostgreSQLContainer("postgres:13.6-alpine")
-                .withDatabaseName("openexl")
+                .withDatabaseName("my_db")
                 .withUsername("root")
                 .withPassword("root");
-
-
-        DB_CONTAINER.start();
-
     }
 
-    @Container
-    private static PostgreSQLContainer container = DB_CONTAINER;
-
+    static {
+        Startables.deepStart(DB_CONTAINER).join();
+    }
 
     @DynamicPropertySource
     public static void overrideProps(DynamicPropertyRegistry registry) {
