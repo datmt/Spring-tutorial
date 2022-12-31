@@ -1,6 +1,6 @@
 package com.datmt.spring_tests.integration;
 
-import com.datmt.spring_tests.ContainerBase;
+import com.datmt.spring_tests.containers.ContainerBase;
 import com.datmt.spring_tests.model.Investment;
 import com.datmt.spring_tests.repository.InvestmentRepository;
 import org.junit.jupiter.api.*;

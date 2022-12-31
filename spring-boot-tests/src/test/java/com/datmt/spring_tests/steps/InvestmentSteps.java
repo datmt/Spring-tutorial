@@ -1,8 +1,9 @@
 package com.datmt.spring_tests.steps;
 
-import com.datmt.spring_tests.ContainerBase;
+import com.datmt.spring_tests.containers.ContainerBase;
 import com.datmt.spring_tests.model.Investment;
 import com.datmt.spring_tests.repository.InvestmentRepository;
+import io.cucumber.java.en.Given;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,5 +38,10 @@ public class InvestmentSteps extends ContainerBase {
         assert allInvestments.size() == expectedTotalInvestment;
         var actualTotalAmount = allInvestments.stream().map(Investment::getAmount).reduce(0f, Float::sum);
         Assertions.assertEquals(expectedTotalAmount, actualTotalAmount);
+    }
+
+    @Given("a step")
+    public void aStep() {
+
     }
 }
