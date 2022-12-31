@@ -31,4 +31,16 @@ public class UserSteps {
     public void iShouldFindAtLeastOneResult() {
         Assertions.assertTrue(users.size() > 0);
     }
+
+    @Given("No users exist")
+    public void noUsersExist() {
+        userRepository.deleteAll();
+    }
+
+    @Then("I should have {} users")
+    public void iShouldHaveUsers(int userCount) {
+        Assertions.assertEquals(userCount, userRepository.count());
+    }
+
+
 }
