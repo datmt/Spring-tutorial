@@ -1,0 +1,21 @@
+#Docker compose file for starting common resources
+
+version: '3'
+
+# Postgres 15
+services:
+  postgres:
+    image: postgres:13.6-alpine
+    container_name: spring-tutorial-postgres
+    restart: always
+    volumes:
+      - spring_tutorial_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+volumes:
+    spring_tutorial_postgres_data:

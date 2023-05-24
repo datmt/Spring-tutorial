@@ -30,7 +30,8 @@ public class SpringDataJpaTransactionalDemoApplication implements CommandLineRun
     }
 
     @Override
-//    @Transactional
+    //adding this @Transactional annotation fix the lazyfetch exception
+    @Transactional
     public void run(String... args) throws Exception {
         var maker = new Maker();
         maker.setName("BMW");

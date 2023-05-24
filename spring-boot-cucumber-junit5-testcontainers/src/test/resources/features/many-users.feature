@@ -7,3 +7,4 @@ Feature: Many users
     Given I create an user named "John" and store to database
     Given I create an user named "Johnny" and store to database
     Then I should have 2 users
+
