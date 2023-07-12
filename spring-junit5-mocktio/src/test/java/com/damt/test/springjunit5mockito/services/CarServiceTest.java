@@ -1,9 +1,8 @@
-package com.damt.test.springjunit5mockito3.services2;
+package com.damt.test.springjunit5mockito.services;
 
 import com.damt.test.springjunit5mockito.SpringJunit5MockitoApplication;
 import com.damt.test.springjunit5mockito.models.Car;
 import com.damt.test.springjunit5mockito.repositories.CarRepository;
-import com.damt.test.springjunit5mockito.services.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
