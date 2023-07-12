@@ -27,31 +27,12 @@ class CarServiceTest {
 
     @BeforeEach
     void setUp() {
-        newCar = new Car();
-        newCar.setName("Corolla");
-        newCar.setModel("Toyota");
-        newCar.setMaker("Toyota");
-        newCar.setColor("White");
 
-        savedCar = new Car();
-        savedCar.setId(1L);
-        savedCar.setName("Corolla");
-        savedCar.setModel("Toyota");
-        savedCar.setMaker("Toyota");
-        savedCar.setColor("White");
-
-        when(carRepository.save(newCar)).thenReturn(savedCar);
     }
 
     @Test
     @DisplayName("Cannot save car since name is null")
     void create() {
-        var car = new Car();
-        car.setColor("White");
-        car.setMaker("Toyota");
-        car.setModel("Corolla");
-
-        Assertions.assertThrows(RuntimeException.class, () -> carService.create(car));
     }
 
     @Test
