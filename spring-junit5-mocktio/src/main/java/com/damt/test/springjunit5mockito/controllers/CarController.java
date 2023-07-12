@@ -3,6 +3,7 @@ package com.damt.test.springjunit5mockito.controllers;
 import com.damt.test.springjunit5mockito.models.Car;
 import com.damt.test.springjunit5mockito.services.CarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,8 +28,8 @@ public class CarController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         carService.delete(id);
-        return "Car deleted";
+        return ResponseEntity.ok("Car deleted");
     }
 }
