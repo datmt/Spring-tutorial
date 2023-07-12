@@ -17,5 +17,15 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
 
+  mongo_spring_boot_tutorial:
+    image: mongo:5.0
+    restart: always
+    container_name: mongo_spring_boot_tutorial
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bookstore
+      MONGO_INITDB_ROOT_PASSWORD: bookstore
+      MONGO_INITDB_DATABASE: bookstore
+    ports:
+      - "27021:27017"
 volumes:
     spring_tutorial_postgres_data:
