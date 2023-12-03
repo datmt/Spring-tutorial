@@ -1,0 +1,29 @@
+# create configuration to postgresql at localhost
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/batch_job
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true
+
+  data:
+    mongodb:
+      database: batch_job
+      host: localhost
+      port: 27020
+      username: mongo1
+      password: mongo1
+      authentication-database: admin
+  batch:
+    jdbc:
+      initialize-schema: always
+# configure connection to mongodb
+#spring.data.mongodb.uri=mongodb://localhost:27017/batch_job
