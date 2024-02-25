@@ -1,0 +1,45 @@
+<h1>Hello SSE</h1>
+
+
+<table>
+    <thead>
+    <tr>
+        <th>Dogs</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+            <button id="stop-dog-stream-button">Stop Dog Stream</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <ul id="dogs-list"></ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+<script>
+    const dogSource = new EventSource('/sse/dogs');
+    dogSource.onmessage = (event) => {
+        const newDogElement = document.createElement('li');
+        const listDogsElement = document.getElementById('dogs-list');
+        console.log('receiving event', event);
+
+        const data = JSON.parse(event.data);
+        newDogElement.textContent = `${data.name} has id ${data.id}`
+
+        listDogsElement.appendChild(newDogElement)
+    }
+
+    const stopDogStreamButton = document.getElementById('stop-dog-stream-button');
+    stopDogStreamButton.addEventListener('click', () => {
+        console.log('stopping dog stream');
+        dogSource.close();
+    });
+
+</script>
