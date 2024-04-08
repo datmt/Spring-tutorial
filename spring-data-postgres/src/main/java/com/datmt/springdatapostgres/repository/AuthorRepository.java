@@ -1,10 +1,13 @@
 package com.datmt.springdatapostgres.repository;
 
-import com.datmt.springdatapostgres.model.Author;
-import org.springframework.data.repository.CrudRepository;
-
 import java.util.List;
 
-public interface AuthorRepository  extends CrudRepository<Author, Long> {
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.datmt.springdatapostgres.model.Author;
+
+@Repository
+public interface AuthorRepository extends CrudRepository<Author, Long> {
     List<Author> findByName(String name);
 }
