@@ -20,7 +20,8 @@ public class BuffDogService {
 
     @BeforeLogging({HidePhoneTransformer.class, HidePowerTransformer.class})
     public Dog retireDog(SuperDog dog) {
-        return new Dog(dog.name(), dog.phoneNumber(), dog.age(), dog.hp() - 100);
+//        return new Dog(dog.name(), dog.phoneNumber(), dog.age(), dog.hp() - 100);
+        return null;
     }
 
     @BeforeLogging

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package com.datmt.spring;
+
+message Order {
+  int64 id = 1 ;
+  string product = 2;
+  int32 quantity = 3  ;
+}
+
+message Customer {
+  int64 id = 1 ;
+  string name = 2;
+  string address = 3;
+  string email = 4;
+}
+
+service OrderService {
+  rpc getOrder (OrderRequest) returns (OrderResponse) {}
+  rpc saveOrder (Order) returns (OrderResponse) {}
+  rpc deleteOrder (OrderRequest) returns (OrderResponse) {}
+}
+
+message OrderRequest {
+  int64 id = 1 ;
+  Order order = 2;
+}
+
+message OrderResponse {
+  int32 code = 1 ;
+  string message = 2;
+  Order order = 3;
+}

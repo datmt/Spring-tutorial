@@ -1,0 +1,13 @@
+server:
+    port: 8282
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        generate-ddl: true
+    datasource:
+        url: jdbc:postgresql://localhost:5432/book_store
+        username: db_master
+        password: db_master
+        driver-class-name: org.postgresql.Driver
