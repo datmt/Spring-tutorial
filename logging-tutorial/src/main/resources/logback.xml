@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
 
     <!-- Define the default log level and additivity for root logger -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="MONGO"/>
     </root>
 
     <!-- Console Appender -->
@@ -22,15 +23,30 @@
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Daily rollover, with gzipped archives -->
-            <fileNamePattern>logs/archived/application-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- daily rollover -->
+            <fileNamePattern>logFile.%d{yyyy-MM-dd HH:mm}.log</fileNamePattern>
+      
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
-            <totalSizeCap>1GB</totalSizeCap>
-        </rollingPolicy>
+            <totalSizeCap>3GB</totalSizeCap>
+          </rollingPolicy>
+    </appender>
+
+
+    <appender name="MONGO" class="com.datmt.logging.config.MongoLogAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %level - %msg%n</pattern>
+        </encoder>
+        <connectionString>mongodb://mongo99:mongo99@localhost:27017</connectionString>
+        <databaseName>log</databaseName>
+        <collectionName>logCollection</collectionName>
     </appender>
 
     <!-- Example of setting a specific log level for a package -->
     <logger name="org.springframework.web" level="WARN"/>
-    <logger name="com.datmt.logging" level="DEBUG"/>
+    <logger name="com.datmt.logging" level="TRACE">
+        <appender-ref ref="MONGO"/>
+        <appender-ref ref="FILE"/>
+    </logger>
 
 </configuration>
