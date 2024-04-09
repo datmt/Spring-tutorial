@@ -36,8 +36,7 @@ public class TestMappingEmbeddable {
     @DisplayName("Test embeddable")
     void testEmbeddable() {
         var engine = new Engine("V8", "Porsch", 1000);
-        var engine2 = new Engine("V1", "Mercedes", 2000);
-        var car = new Car("BMW", List.of(engine, engine2));
+        var car = new Car("BMW", engine);
         commonRepository.save(car);
     }
 
