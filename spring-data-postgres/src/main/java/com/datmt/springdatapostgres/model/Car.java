@@ -1,8 +1,10 @@
 package com.datmt.springdatapostgres.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +17,6 @@ import lombok.NoArgsConstructor;
 public class Car extends Thing {
 
     private String name;
-    @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "engine_name"))
-    private Engine engine;
+    private List<Engine> engines = new ArrayList<>();
 }
