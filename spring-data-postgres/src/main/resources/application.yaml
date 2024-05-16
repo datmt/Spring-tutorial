@@ -4,12 +4,26 @@ spring:
     jpa:
         properties:
             hibernate:
+                format_sql: true
                 dialect: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: create
+            format_sql: true
         show-sql: true
     datasource:
         url: jdbc:postgresql://localhost:5432/book_store
         username: db_master
         password: db_master
         driver-class-name: org.postgresql.Driver
+logging:
+    level:
+        org:
+            hibernate:
+                orm:
+                    jdbc:
+                        bind: TRACE
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE

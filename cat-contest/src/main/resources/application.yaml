@@ -1,0 +1,19 @@
+# create configuration to postgresql at localhost
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cat_contest
+    username: db_master
+    password: db_master
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 50
+      idle-timeout: 30000
+      max-lifetime: 300000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true

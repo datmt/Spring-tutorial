@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All cats</title>
+</head>
+<body>
+<h1>Cats List</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="contest : ${contests}">
+        <td th:text="${contest.id}">Contest ID</td>
+        <td th:text="${contest.name}">Contest Name</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

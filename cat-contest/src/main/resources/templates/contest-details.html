@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Contest details</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Image</th>
+        <th>Vote Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <h1 th:text="${contest.name}"></h1>
+    <tr th:each="cat : ${cats}">
+        <td th:text="${cat.cat.id}"></td>
+        <td th:text="${cat.cat.name}"></td>
+        <td><img th:src="${cat.cat.image}"></td>
+        <td th:text="${cat.voteCount}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
