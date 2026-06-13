@@ -5,16 +5,19 @@ Production-ready demo covering read-heavy caching patterns in Spring Boot + Redi
 ## Setup
 
 ### Prerequisites
+
 - Java 17+
 - Redis 6.0+ running locally on `localhost:6379`
 - Redis password set to `hihi` (configured in `application.properties`)
 
 ### Start Redis
+
 ```bash
 redis-server --requirepass hihi
 ```
 
 ### Run the app
+
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.arguments=--server.port=8082
 ```
@@ -28,11 +31,13 @@ Runs on `http://localhost:8082`.
 **Pattern**: Expensive DB read → cache on first access → serve from Redis on subsequent reads.
 
 **Key Design Points**:
+
 - Per-cache TTL config (accounts: 10 min, demo data: 30 min)
 - Three annotation strategies: `@Cacheable` (read-through), `@CacheEvict` (invalidate), `@CachePut` (update inline)
 - First hit ~800ms (simulated slow query), cached hits <5ms
 
 **Demo Flow**:
+
 ```bash
 # First call — DB hit, cache miss
 curl -w "\ntime:%{time_total}s\n" http://localhost:8082/accounts/ACC001
@@ -58,11 +63,13 @@ curl http://localhost:8082/accounts/ACC001
 ```
 
 **Files**:
+
 - `account/AccountService.java` — annotation showcase
 - `account/AccountController.java` — endpoints
 - `account/AccountRepository.java` — simulates slow DB (800ms sleep)
 
 **Discussion Points**:
+
 - When to use `@CacheEvict` vs `@CachePut`? Evict: safe if miss-on-stale is acceptable. Put: lower latency, higher consistency risk.
 - TTL tuning: shorter TTL for volatile data (pending transactions) vs longer for reference data (account master).
 
@@ -73,12 +80,14 @@ curl http://localhost:8082/accounts/ACC001
 **Pattern**: Reference data (FX rates, feature flags) cached with pull-on-miss fallback + periodic bulk refresh.
 
 **Key Design Points**:
+
 - Warm-up job runs every 60s (`@Scheduled(fixedRate=60_000)`)
 - Pipeline used for bulk refresh — 5 `SET` commands in 1 round trip
 - Avoids "thundering herd" on deploy/restart — cache warm before traffic arrives
 - 5-minute TTL gives refresh window of 60s scheduled refresh + 240s buffer
 
 **Demo Flow**:
+
 ```bash
 # First call — Redis hit (pre-warmed by scheduler)
 curl http://localhost:8082/exchange-rates/USD-EUR
@@ -92,10 +101,12 @@ curl -X POST http://localhost:8082/exchange-rates/refresh
 ```
 
 **Files**:
+
 - `exchangerate/ExchangeRateCache.java` — pipeline refresh, scheduled job
 - `exchangerate/ExchangeRateController.java` — endpoints
 
 **Discussion Points**:
+
 - Why pipeline? Reduces round trips. 5 SETs → 1 pipeline call vs 5 individual calls.
 - Scheduled warm-up prevents cache stampede when single hot key expires and 1000 requests hit DB simultaneously.
 - Real-world: integrate with FX provider (Bloomberg, ECB API) instead of `fetchAllRatesFromUpstream()`.
@@ -107,11 +118,13 @@ curl -X POST http://localhost:8082/exchange-rates/refresh
 **Pattern**: Top-N rankings, user rank lookups. O(log N) reads vs O(N log N) SQL `ORDER BY` on full table.
 
 **Key Design Points**:
+
 - Redis ZSET (`ZINCRBY`, `ZREVRANGE`, `ZREVRANK`) for atomic, sorted score operations
 - Daily key rotation (`leaderboard:2026-06-13`) — auto-expires, no cleanup job
 - Can compose weekly/monthly rollups via `ZUNIONSTORE` (union of daily ZSETs)
 
 **Demo Flow**:
+
 ```bash
 # Record trades (increments cumulative volume per user)
 curl -X POST "http://localhost:8082/leaderboard/trade?userId=alice&volume=5000"
@@ -131,10 +144,12 @@ curl http://localhost:8082/leaderboard/rank/alice  # Rank updated instantly
 ```
 
 **Files**:
+
 - `leaderboard/TradingActivityService.java` — ZSET operations
 - `leaderboard/LeaderboardController.java` — endpoints
 
 **Discussion Points**:
+
 - Why ZSET not HASH? HASH is unordered; ZSET gives rank for free via `ZREVRANK`.
 - Daily rotation: `leaderboard:2026-06-14` created tomorrow automatically, yesterday's expires via TTL.
 - Extension: `ZUNIONSTORE` to merge daily leaderboards into weekly/monthly without DB scan.
@@ -146,12 +161,14 @@ curl http://localhost:8082/leaderboard/rank/alice  # Rank updated instantly
 **Pattern**: Filter + pagination caching for volatile data (e.g., pending transactions). Cache keys are deterministic MD5(filter + page params).
 
 **Key Design Points**:
+
 - Combinatorial key space (accountId × status × page × size) solved via MD5 hash → compact, deterministic keys
 - Short TTL (30s) avoids expensive cache invalidation (SCAN+DEL is O(N))
 - Staleness acceptable for list views (exact counts should query DB directly)
 - No per-item invalidation — entire page cache clears after TTL
 
 **Demo Flow**:
+
 ```bash
 # Filter by account + status, page 0
 curl -w "\ntime:%{time_total}s (first, DB)\n" \
@@ -171,11 +188,13 @@ curl "http://localhost:8082/transactions/search?accountId=ACC002&status=COMPLETE
 ```
 
 **Files**:
+
 - `transaction/TransactionQueryService.java` — MD5 cache key builder, short TTL strategy
 - `transaction/TransactionRepository.java` — simulates slow paginated query (600ms)
 - `transaction/TransactionController.java` — endpoints
 
 **Discussion Points**:
+
 - MD5 ensures queries with identical params get same cache key (order-independent).
 - TTL = 30s is aggressive but acceptable for "pending transactions" — accurate counts via direct query if needed.
 - Alternative: cache invalidation on write (monitor `UPDATE transaction ...` events), but adds complexity.
@@ -188,12 +207,14 @@ curl "http://localhost:8082/transactions/search?accountId=ACC002&status=COMPLETE
 **Pattern**: Cross-instance user context caching. Resolves "who is this user + entitlements" from IAM once, then serves from Redis for 15 min.
 
 **Key Design Points**:
+
 - All app instances share same Redis → session data survives restarts and horizontal scale-out
 - TTL = 15 min (matches typical Keycloak access token lifetime)
 - Explicit logout evicts cache (`DELETE /session/{token}`)
 - Real-world: replace IAM mock with actual Keycloak token introspection
 
 **Demo Flow**:
+
 ```bash
 # First call — Keycloak hit (~400ms latency simulated)
 curl -w "\ntime:%{time_total}s (first, IAM)\n" http://localhost:8082/session/token-alice
@@ -217,11 +238,13 @@ curl http://localhost:8082/session/invalid-token  # 404
 ```
 
 **Files**:
+
 - `session/UserContextCache.java` — token → UserContext lookup, explicit eviction
 - `session/SessionController.java` — endpoints
 - `session/UserContext.java` — roles + entitlements model
 
 **Discussion Points**:
+
 - Why not just validate JWT locally? Because entitlements (what a user can do) are mutable and live in IAM. Caching prevents needing to call IAM on every request.
 - Horizontal scale: if app instance A caches user context in local memory, instance B doesn't see it. Redis solves this.
 - Spring Session integration: `spring-session-data-redis` makes `HttpSession` Redis-backed transparently — no manual template calls needed.
@@ -231,6 +254,7 @@ curl http://localhost:8082/session/invalid-token  # 404
 ## Testing with Redis CLI
 
 Inspect cache keys in Redis directly:
+
 ```bash
 redis-cli -a hihi
 
@@ -258,6 +282,7 @@ GET "session:token-alice"
 ## Configuration
 
 **Redis Connection** (`application.properties`):
+
 ```properties
 spring.redis.host=localhost
 spring.redis.port=6379
@@ -265,6 +290,7 @@ spring.redis.password=hihi
 ```
 
 **Cache Configuration** (`SpringbootRedisCacheApplication.java`):
+
 - Default TTL: 1 hour
 - Per-cache overrides: accounts (10 min), secretData (30 min)
 - Serialization: Jackson with `JavaTimeModule` (handles `LocalDateTime`, etc.)
